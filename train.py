@@ -53,7 +53,7 @@ def main():
 
     loss_fn = nn.BCEWithLogitsLoss(reduction='mean')
 
-    load_checkpoint(args.save_path, model, optimizer, args.lr)
+    #load_checkpoint(args.save_path, model, optimizer, args.lr)
 
     for epoch in range(args.epochs):
         print(f'Training epoch {epoch+1}..\n')

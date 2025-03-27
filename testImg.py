@@ -51,7 +51,10 @@ def predict(image_path):
     # Xác định lớp dự đoán
     pred_class = "Dog" if prob <= 0.5 else "Wolf"
 
-    print(f"Predicted Class: {pred_class} (Confidence: {prob:.4f})")
+    if(prob <= 0.5):
+        print(f"Predicted Class: {pred_class} (Confidence: {(1 - prob) * 100:.2f}%)")
+    else:
+        print(f"Predicted Class: {pred_class} (Confidence: {prob * 100:.2f}%)")
 
 import tkinter as tk
 from tkinter import filedialog

@@ -20,9 +20,6 @@ base_model = [
 ]
 
 scaling_params = {
-    # definition of how the defined scaled models look like given alpha, beta, gamma
-    # see paper for scaling formula
-    # key: (phi, img resolution, drop rate)
     "b0": (0, 224, 0.2),
     "b1": (0.5, 240, 0.2),
     "b2": (1, 260, 0.3),
@@ -35,11 +32,6 @@ scaling_params = {
 
 
 class CNNBlock(nn.Module):
-    """A simple convolution, the groups argument kinda sets how many output channels a SINGLE conv produces,
-    ie default = 1, meaning all channels are added PER FILTER, if we set groups = in_channels we have a depthwise
-    convolution
-    """
-
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, groups=1):
         super(CNNBlock, self).__init__()
         self.cnn = nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, groups=groups,
@@ -52,14 +44,6 @@ class CNNBlock(nn.Module):
 
 
 class SqueezeExcitation(nn.Module):
-    """
-    Squeeze Excitation is used to 'weigh' channels based on their information content,
-    the result is that EACH CHANNEL is multiplied by a number in (0, 1) respectively.
-     First perform an adaptive pool PER CHANNEL to reduce the dims from (C, H, W) to (C, 1, 1)
-     then perform 1x1 conv and some transformations to get array A of len C with range (0, 1)
-     then multiply [A] * [(C,H,W)] ie A0 * (channel 0) etc.
-    """
-
     def __init__(self, in_channels, reduced_dim):
         super(SqueezeExcitation, self).__init__()
         self.se = nn.Sequential(
@@ -75,11 +59,6 @@ class SqueezeExcitation(nn.Module):
 
 
 class InverseResBlock(nn.Module):
-    """
-    Inverse Res Block (aka Mobile Block?) first expands the number of channels,
-    then performs a depth-wise convolution on them, then restores the original number of channels
-    and finally applies a skip connection
-    """
 
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, expand_ratio,
                  reduction=4,  # reduction factor for squeeze excitation

@@ -1,0 +1,29 @@
+from PIL import Image
+from torchvision import transforms
+import os
+
+# Đường dẫn dataset gốc
+input_root = 'data/val/dogs'
+# Đường dẫn lưu dataset đã xử lý
+output_root = 'processed_data/val/dogs'
+os.makedirs(output_root, exist_ok=True)
+
+# Transform: Resize về 224x224 (chuẩn EfficientNet)
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+])
+
+# Lặp qua từng ảnh để xử lý và lưu lại
+for img_name in os.listdir(input_root):
+    if img_name.endswith(('.jpg', '.png', '.jpeg')):  # Chỉ xử lý file ảnh
+        img_path = os.path.join(input_root, img_name)
+        image = Image.open(img_path).convert('RGB')  # Đọc và chuyển về RGB
+        
+        # Resize ảnh
+        image = transform(image)
+        
+        # Lưu lại ảnh đã xử lý thành .jpg
+        output_path = os.path.join(output_root, os.path.splitext(img_name)[0] + '.jpg')
+        image.save(output_path, 'JPEG')
+
+        print(f"Saved: {output_path}")
